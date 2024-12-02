@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS Users (
+    user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(45) NOT NULL,
+    password VARCHAR(64) NOT NULL,
+    role VARCHAR(45) NOT NULL,
+    enabled TINYINT DEFAULT 1
+);
