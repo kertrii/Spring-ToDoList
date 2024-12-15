@@ -1,5 +1,6 @@
 package org.example.todolist.controller;
 
+import jakarta.validation.Valid;
 import org.example.todolist.model.Note;
 import org.example.todolist.service.NoteService;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,7 @@ public class NoteController {
     }
 
     @PostMapping("/edit")
-    public String editNote(Note note) {
+    public String editNote(@Valid @ModelAttribute Note note) {
         noteService.update(note);
         return "redirect:/note/list";
     }
@@ -52,7 +53,7 @@ public class NoteController {
     }
 
     @PostMapping("/create")
-    public String createNote(@ModelAttribute Note note) {
+    public String createNote(@Valid @ModelAttribute Note note) {
         noteService.add(note);
         return "redirect:/note/list";
     }
