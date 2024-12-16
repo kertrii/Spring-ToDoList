@@ -3,58 +3,46 @@ package org.example.todolist.controller;
 import jakarta.validation.Valid;
 import org.example.todolist.model.Note;
 import org.example.todolist.service.NoteService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/note")
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/note")
 public class NoteController {
     private final NoteService noteService;
 
+    @Autowired
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
     }
 
-    @GetMapping
-    public String showHomePage() {
-        return "home-page";
-    }
-
     @GetMapping("/list")
-    public String listNote(Model model) {
-        model.addAttribute("notes", noteService.listAll());
-        return "note-list";
+    public List<Note> listNotes() {
+        return noteService.listAll();
     }
 
-    @PostMapping("/delete")
-    public String deleteNote(@RequestParam("id") long id) {
+    @DeleteMapping("/{id}")
+    public String deleteNote(@PathVariable("id") long id) {
         noteService.deleteById(id);
-        return "redirect:/note/list";
+        return "Note with id " + id + " deleted";
     }
 
-    @GetMapping("/edit")
-    public String editFromNote(@RequestParam("id") long id, Model model) {
-        Note note = noteService.getById(id);
-        model.addAttribute("note", note);
-        return "note-edit";
+    @GetMapping("/{id}")
+    public Note getNoteById(@PathVariable("id") long id) {
+        return noteService.getById(id);
     }
 
-    @PostMapping("/edit")
-    public String editNote(@Valid @ModelAttribute Note note) {
+    @PutMapping("/edit")
+    public Note editNote(@Valid @RequestBody Note note) {
         noteService.update(note);
-        return "redirect:/note/list";
-    }
-
-    @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        model.addAttribute("note", new Note());
-        return "create-note";
+        return note;
     }
 
     @PostMapping("/create")
-    public String createNote(@Valid @ModelAttribute Note note) {
+    public Note createNote(@Valid @RequestBody Note note) {
         noteService.add(note);
-        return "redirect:/note/list";
+        return note;
     }
 }
